@@ -15,9 +15,36 @@ namespace Day02
             source = source.Remove(source.Length - 1);
             List<List<int>> spreadSheet = source.Split('\n').Select(c => c.Split('\t').Select(int.Parse).ToList()).ToList();
 
-            var partOne =  spreadSheet.Select(c => c.Max() - c.Min()).Sum();
+            int partOne =  spreadSheet.Select(c => c.Max() - c.Min()).Sum();
 
+            List<int> checkSums = new List<int>();
+            foreach (List<int> row in spreadSheet)
+            {
+                for (int i = 0; i < row.Count; i++)
+                {
+                    for (int j = 0; j < row.Count; j++)
+                    {
+                        if (i==j)
+                        {
+                            continue;
+                        }
 
+                        if (row[i] > row[j] && row[i] % row[j] == 0)
+                        {
+                            checkSums.Add(row[i] / row[j]);
+                            break;
+                        }
+
+                    }
+                }
+            }
+
+            int partTwo = checkSums.Sum();
+
+            Console.WriteLine($"Part one: {partOne}");
+            Console.WriteLine($"Part two: {partTwo}");
+
+            Console.ReadKey();
         }
     }
 }
