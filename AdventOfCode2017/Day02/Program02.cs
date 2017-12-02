@@ -13,6 +13,11 @@ namespace Day02
         {
             string source = File.ReadAllText(@"..\..\input.txt");
             source = source.Remove(source.Length - 1);
+            List<List<int>> spreadSheet = source.Split('\n').Select(c => c.Split('\t').Select(int.Parse).ToList()).ToList();
+
+            var partOne =  spreadSheet.Select(c => c.Max() - c.Min()).Sum();
+
+
         }
     }
 }
