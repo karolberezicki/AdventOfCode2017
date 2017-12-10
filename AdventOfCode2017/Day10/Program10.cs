@@ -24,25 +24,20 @@ namespace Day10
         private static int PartOne(string source)
         {
             List<int> input = source.Split(',').Select(int.Parse).ToList();
-            List<int> list = Enumerable.Range(0, 256).ToList();
-
-            KnotHash(input, list, 1);
-
-            return list[0] * list[1];
+            List<int> hash = KnotHash(input, 1);
+            return hash[0] * hash[1];
         }
 
         private static string PartTwo(string source)
         {
             List<int> input = source.Select(c => (int)c).Concat(new[] { 17, 31, 73, 47, 23 }).ToList();
-            List<int> list = Enumerable.Range(0, 256).ToList();
-
-            KnotHash(input, list, 64);
-
-            return SparseToDenseHash(list);
+            List<int> hash = KnotHash(input, 64);
+            return SparseToDenseHash(hash);
         }
 
-        private static void KnotHash(IReadOnlyCollection<int> input, IList<int> list, int rounds)
+        private static List<int> KnotHash(IReadOnlyCollection<int> input, uint rounds)
         {
+            List<int> hash = Enumerable.Range(0, 256).ToList();
             int currentPosition = 0;
             int skipSize = 0;
 
@@ -53,24 +48,26 @@ namespace Day10
                     List<int> subList = new List<int>();
                     for (int i = currentPosition; i < currentPosition + sliceLength; i++)
                     {
-                        int index = i % list.Count;
-                        subList.Add(list[index]);
+                        int index = i % hash.Count;
+                        subList.Add(hash[index]);
                     }
 
                     subList.Reverse();
 
                     for (int i = currentPosition, sublistIndex = 0; i < currentPosition + sliceLength; i++, sublistIndex++)
                     {
-                        int index = i % list.Count;
-                        list[index] = subList[sublistIndex];
+                        int index = i % hash.Count;
+                        hash[index] = subList[sublistIndex];
                     }
 
                     currentPosition += sliceLength + skipSize;
-                    currentPosition = currentPosition % list.Count;
+                    currentPosition = currentPosition % hash.Count;
 
                     skipSize++;
                 }
             }
+
+            return hash;
         }
 
         private static string SparseToDenseHash(IReadOnlyCollection<int> list)
