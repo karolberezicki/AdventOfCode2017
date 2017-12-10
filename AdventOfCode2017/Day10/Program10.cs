@@ -29,6 +29,29 @@ namespace Day10
             int currentPosition = 0;
             int skipSize = 0;
 
+            KnotHash(input, list, ref currentPosition, ref skipSize);
+
+            return list[0] * list[1];
+        }
+
+        private static string PartTwo(string source)
+        {
+            List<int> input = source.Select(c => (int)c).Concat(new[] { 17, 31, 73, 47, 23 }).ToList();
+            List<int> list = Enumerable.Range(0, 256).ToList();
+
+            int currentPosition = 0;
+            int skipSize = 0;
+
+            for (int round = 0; round < 64; round++)
+            {
+                KnotHash(input, list, ref currentPosition, ref skipSize);
+            }
+
+            return SparseToDenseHash(list);
+        }
+
+        private static void KnotHash(IEnumerable<int> input, IList<int> list, ref int currentPosition, ref int skipSize)
+        {
             foreach (int sliceLength in input)
             {
                 List<int> subList = new List<int>();
@@ -53,54 +76,16 @@ namespace Day10
 
                 skipSize++;
             }
-
-            return list[0] * list[1];
         }
 
-        private static string PartTwo(string source)
+        private static string SparseToDenseHash(IReadOnlyCollection<int> list)
         {
-            List<int> input = source.Select(c => (int) c).Concat(new[] { 17, 31, 73, 47, 23 }).ToList();
-            List<int> list = Enumerable.Range(0, 256).ToList();
-
-            int currentPosition = 0;
-            int skipSize = 0;
-
-            for (int round = 0; round < 64; round++)
-            {
-                foreach (int sliceLength in input)
-                {
-                    List<int> subList = new List<int>();
-                    for (int i = currentPosition; i < currentPosition + sliceLength; i++)
-                    {
-                        int index = i % list.Count;
-                        subList.Add(list[index]);
-                    }
-
-                    subList.Reverse();
-
-                    int sublistIndex = 0;
-                    for (int i = currentPosition; i < currentPosition + sliceLength; i++)
-                    {
-                        int index = i % list.Count;
-                        list[index] = subList[sublistIndex];
-                        sublistIndex++;
-                    }
-
-                    currentPosition += sliceLength + skipSize;
-                    currentPosition = currentPosition % list.Count;
-
-                    skipSize++;
-                }
-            }
-
             List<int> xored = new List<int>();
             for (int i = 0; i < 16; i++)
             {
                 xored.Add(list.Skip(i * 16).Take(16).Aggregate((acc, val) => (byte)(acc ^ val)));
             }
-
             return string.Join("", xored.Select(c => c.ToString("x2")));
-
         }
     }
 }
