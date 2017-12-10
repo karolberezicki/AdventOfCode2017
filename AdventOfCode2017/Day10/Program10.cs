@@ -26,10 +26,7 @@ namespace Day10
             List<int> input = source.Split(',').Select(int.Parse).ToList();
             List<int> list = Enumerable.Range(0, 256).ToList();
 
-            int currentPosition = 0;
-            int skipSize = 0;
-
-            KnotHash(input, list, ref currentPosition, ref skipSize);
+            KnotHash(input, list, 1);
 
             return list[0] * list[1];
         }
@@ -39,42 +36,40 @@ namespace Day10
             List<int> input = source.Select(c => (int)c).Concat(new[] { 17, 31, 73, 47, 23 }).ToList();
             List<int> list = Enumerable.Range(0, 256).ToList();
 
-            int currentPosition = 0;
-            int skipSize = 0;
-
-            for (int round = 0; round < 64; round++)
-            {
-                KnotHash(input, list, ref currentPosition, ref skipSize);
-            }
+            KnotHash(input, list, 64);
 
             return SparseToDenseHash(list);
         }
 
-        private static void KnotHash(IEnumerable<int> input, IList<int> list, ref int currentPosition, ref int skipSize)
+        private static void KnotHash(IReadOnlyCollection<int> input, IList<int> list, int rounds)
         {
-            foreach (int sliceLength in input)
+            int currentPosition = 0;
+            int skipSize = 0;
+
+            for (int round = 0; round < rounds; round++)
             {
-                List<int> subList = new List<int>();
-                for (int i = currentPosition; i < currentPosition + sliceLength; i++)
+                foreach (int sliceLength in input)
                 {
-                    int index = i % list.Count;
-                    subList.Add(list[index]);
+                    List<int> subList = new List<int>();
+                    for (int i = currentPosition; i < currentPosition + sliceLength; i++)
+                    {
+                        int index = i % list.Count;
+                        subList.Add(list[index]);
+                    }
+
+                    subList.Reverse();
+
+                    for (int i = currentPosition, sublistIndex = 0; i < currentPosition + sliceLength; i++, sublistIndex++)
+                    {
+                        int index = i % list.Count;
+                        list[index] = subList[sublistIndex];
+                    }
+
+                    currentPosition += sliceLength + skipSize;
+                    currentPosition = currentPosition % list.Count;
+
+                    skipSize++;
                 }
-
-                subList.Reverse();
-
-                int sublistIndex = 0;
-                for (int i = currentPosition; i < currentPosition + sliceLength; i++)
-                {
-                    int index = i % list.Count;
-                    list[index] = subList[sublistIndex];
-                    sublistIndex++;
-                }
-
-                currentPosition += sliceLength + skipSize;
-                currentPosition = currentPosition % list.Count;
-
-                skipSize++;
             }
         }
 
