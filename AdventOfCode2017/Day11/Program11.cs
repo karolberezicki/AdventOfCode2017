@@ -56,7 +56,6 @@ namespace Day11
             Console.WriteLine($"Part two: {maxDistanceFromStart}");
 
             Console.ReadKey();
-
         }
     }
 }
