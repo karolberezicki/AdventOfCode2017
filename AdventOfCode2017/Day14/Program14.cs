@@ -12,17 +12,46 @@ namespace Day14
             const string source = "ljoxqyyw";
             int[][] grid = GenerateGrid(source);
 
-            var squaresCount = grid.SelectMany(c => c).Sum();
+            int squaresCount = grid.SelectMany(c => c).Sum();
+
+            bool[,] visited = new bool[grid.Length, grid.Length];
+            int regions = 0;
 
             for (int i = 0; i < grid.Length; i++)
             {
                 for (int j = 0; j < grid[i].Length; j++)
                 {
-                    var x = grid[i][j];
-                    var n = GetNeighbors(i, j, grid);
+                    if (visited[i,j] || grid[i][j] == 0)
+                    {
+                        continue;
+                    }
+
+                    Queue<Neighbor<int>> queue = new Queue<Neighbor<int>>();
+                    queue.Enqueue(new Neighbor<int>{Value = grid[i][j], X = i, Y = j});
+
+                    while (queue.Count > 0)
+                    {
+                        Neighbor<int> currentSquare = queue.Dequeue();
+                        visited[currentSquare.X, currentSquare.Y] = true;
+
+                        HashSet<Neighbor<int>> neighbors = GetNeighbors(currentSquare.X, currentSquare.Y, grid);
+
+                        foreach (Neighbor<int> n in neighbors)
+                        {
+                            if (visited[n.X, n.Y] == false && n.Value == 1)
+                            {
+                                queue.Enqueue(n);
+                            }
+                        }
+                    }
+                    regions++;
                 }
             }
 
+            Console.WriteLine($"Part one: {squaresCount}");
+            Console.WriteLine($"Part two: {regions}");
+
+            Console.ReadKey();
         }
 
         private static int[][] GenerateGrid(string source)
@@ -83,11 +112,11 @@ namespace Day14
             return string.Join("", xored.Select(c => Convert.ToString(c, 2).PadLeft(8, '0')));
         }
 
-        public static List<Neighbor<T>> GetNeighbors<T>(int i, int j, T[][] cellValues)
+        public static HashSet<Neighbor<T>> GetNeighbors<T>(int i, int j, T[][] cellValues)
         {
             int size = cellValues.Length;
 
-            List<Neighbor<T>> neighbors = new List<Neighbor<T>>();
+            HashSet<Neighbor<T>> neighbors = new HashSet<Neighbor<T>>();
 
             if (IsInsideArray(i, j, size))
             {
@@ -99,14 +128,6 @@ namespace Day14
                     neighbors.Add(new Neighbor<T> { Value = cellValues[i][j + 1], X = i, Y = j+1 });
                 if (IsInsideArray(i, j - 1, size))
                     neighbors.Add(new Neighbor<T> { Value = cellValues[i][j - 1], X = i, Y = j-1 });
-                if (IsInsideArray(i - 1, j + 1, size))
-                    neighbors.Add(new Neighbor<T> { Value = cellValues[i - 1][j + 1], X = i-1, Y = j+1 });
-                if (IsInsideArray(i + 1, j - 1, size))
-                    neighbors.Add(new Neighbor<T> { Value = cellValues[i + 1][j - 1], X = i+1, Y = j-1 });
-                if (IsInsideArray(i + 1, j + 1, size))
-                    neighbors.Add(new Neighbor<T> { Value = cellValues[i + 1][j + 1], X = i+1, Y = j+1 });
-                if (IsInsideArray(i - 1, j - 1, size))
-                    neighbors.Add(new Neighbor<T> { Value = cellValues[i - 1][j - 1], X = i-1, Y = j-1 });
             }
             return neighbors;
         }
