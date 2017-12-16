@@ -14,9 +14,49 @@ namespace Day16
 
             List<string> input = source.Split(',').ToList();
 
-            string programs = "abcdefghijklmnop";
+            const string programs = "abcdefghijklmnop";
             char[] programsArray = programs.ToCharArray();
 
+            string partOne = new string(Dance(input, programsArray));
+
+            programsArray = programs.ToCharArray();
+
+            HashSet<string> seen = new HashSet<string>();
+
+            int afterCycles = 0;
+
+            for (int i = 0; i < 1000000000; i++)
+            {
+                programsArray = Dance(input, programsArray);
+
+                string prog = new string(programsArray);
+
+                if (seen.Contains(programs))
+                {
+                    afterCycles = 1000000000 % i;
+                    break;
+                }
+
+                seen.Add(prog);
+            }
+
+            programsArray = programs.ToCharArray();
+
+            for (int i = 0; i < afterCycles; i++)
+            {
+                programsArray = Dance(input, programsArray);
+            }
+
+            string partTwo = new string(programsArray);
+
+            Console.WriteLine($"Part one: {partOne}");
+            Console.WriteLine($"Part two: {partTwo}");
+
+            Console.ReadKey();
+        }
+
+        private static char[] Dance(IEnumerable<string> input, char[] programsArray)
+        {
             foreach (string instruction in input)
             {
                 char danceMove = instruction.First();
@@ -41,7 +81,7 @@ namespace Day16
                 }
             }
 
-            string partOne = new string(programsArray);
+            return programsArray;
         }
 
         public static char[] Spin(char[] array, int spinSize)
