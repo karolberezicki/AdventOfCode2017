@@ -25,14 +25,14 @@ namespace Day18
                 }
             }
 
-            long lastPlayedFrequency = 0;
-
-            lastPlayedFrequency = PartOne(input, registers, lastPlayedFrequency);
+            long lastPlayedFrequency = PartOne(input, registers);
 
         }
 
-        private static long PartOne(List<List<string>> input, Dictionary<string, long> registers, long lastPlayedFrequency)
+        private static long PartOne(List<List<string>> input, Dictionary<string, long> registers)
         {
+            long lastPlayedFrequency = 0;
+
             for (int i = 0; i < input.Count; i++)
             {
                 var inst = input[i][0];
