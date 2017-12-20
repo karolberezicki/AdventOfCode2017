@@ -19,9 +19,6 @@ namespace Day20
             Console.WriteLine($"Part one: {closestParticleToCenter}");
             Console.WriteLine($"Part two: {countOfNonCollidedParticles}");
 
-            Debug.Assert(closestParticleToCenter == 258);
-            Debug.Assert(countOfNonCollidedParticles == 707);
-
             Console.ReadKey();
         }
 
@@ -42,18 +39,18 @@ namespace Day20
 
                 foreach (Particle particle in particles)
                 {
-                    List<int> colidedParticles = particles.Where(p =>
+                    List<int> collidedPartiles = particles.Where(p =>
                         particle.Index != p.Index
                         && !collided.Contains(particle.Index)
                         && particle.IsAtSamePosition(p)).Select(c=> c.Index).ToList();
 
-                    if (colidedParticles.Count <= 0)
+                    if (collidedPartiles.Count <= 0)
                     {
                         continue;
                     }
 
                     collided.Add(particle.Index);
-                    collided.UnionWith(colidedParticles);
+                    collided.UnionWith(collidedPartiles);
                 }
 
                 if (lastCollisionCount == collided.Count)
