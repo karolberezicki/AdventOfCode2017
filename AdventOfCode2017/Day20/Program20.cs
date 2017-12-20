@@ -42,18 +42,18 @@ namespace Day20
 
                 foreach (Particle particle in particles)
                 {
-                    foreach (Particle otherParticle in particles)
-                    {
-                        if (particle.Index == otherParticle.Index
-                            || collided.Contains(particle.Index)
-                            || !particle.IsAtSamePosition(otherParticle))
-                        {
-                            continue;
-                        }
+                    List<int> colidedParticles = particles.Where(p =>
+                        particle.Index != p.Index
+                        && !collided.Contains(particle.Index)
+                        && particle.IsAtSamePosition(p)).Select(c=> c.Index).ToList();
 
-                        collided.Add(particle.Index);
-                        collided.Add(otherParticle.Index);
+                    if (colidedParticles.Count <= 0)
+                    {
+                        continue;
                     }
+
+                    collided.Add(particle.Index);
+                    collided.UnionWith(colidedParticles);
                 }
 
                 if (lastCollisionCount == collided.Count)
