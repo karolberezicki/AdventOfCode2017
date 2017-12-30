@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BridgeComponent.cs" />
     <Compile Include="Program24.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
