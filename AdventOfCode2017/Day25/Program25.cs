@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Day25
 {
     public class Program25
     {
-        public static Dictionary<int, int> States = new Dictionary<int, int>();
         public static State CurrentState;
         public static int Index;
+        public static HashSet<int> States = new HashSet<int>();
 
         public static void Main(string[] args)
         {
@@ -37,7 +36,7 @@ namespace Day25
                 }
             }
 
-            int diagnosticChecksum = States.Values.Sum();
+            int diagnosticChecksum = States.Count;
 
             Console.WriteLine($"Part one: {diagnosticChecksum}");
 
@@ -48,92 +47,92 @@ namespace Day25
 
         private static void MoveSlotRight() => Index++;
 
-        private static void WriteValue0() => States[Index] = 0;
+        private static void WriteValueZero() => States.Remove(Index);
 
-        private static void WriteValue1() => States[Index] = 1;
+        private static void WriteValueOne() => States.Add(Index);
 
-        private static int GetValue() => States.ContainsKey(Index) ? States[Index] : 0;
+        private static int CurrentValue => States.Contains(Index) ? 1 : 0;
 
         private static State ExecuteA()
         {
-            if (GetValue() == 0)
+            if (CurrentValue == 0)
             {
-                WriteValue1();
+                WriteValueOne();
                 MoveSlotRight();
                 return State.B;
             }
 
-            WriteValue0();
+            WriteValueZero();
             MoveSlotLeft();
             return State.C;
         }
 
         private static State ExecuteB()
         {
-            if (GetValue() == 0)
+            if (CurrentValue == 0)
             {
-                WriteValue1();
+                WriteValueOne();
                 MoveSlotLeft();
                 return State.A;
             }
 
-            WriteValue1();
+            WriteValueOne();
             MoveSlotRight();
             return State.D;
         }
 
         private static State ExecuteC()
         {
-            if (GetValue() == 0)
+            if (CurrentValue == 0)
             {
-                WriteValue1();
+                WriteValueOne();
                 MoveSlotRight();
                 return State.A;
             }
 
-            WriteValue0();
+            WriteValueZero();
             MoveSlotLeft();
             return State.E;
         }
 
         private static State ExecuteD()
         {
-            if (GetValue() == 0)
+            if (CurrentValue == 0)
             {
-                WriteValue1();
+                WriteValueOne();
                 MoveSlotRight();
                 return State.A;
             }
 
-            WriteValue0();
+            WriteValueZero();
             MoveSlotRight();
             return State.B;
         }
 
         private static State ExecuteE()
         {
-            if (GetValue() == 0)
+            if (CurrentValue == 0)
             {
-                WriteValue1();
+                WriteValueOne();
                 MoveSlotLeft();
                 return State.F;
             }
 
-            WriteValue1();
+            WriteValueOne();
             MoveSlotLeft();
             return State.C;
         }
 
         private static State ExecuteF()
         {
-            if (GetValue() == 0)
+            if (CurrentValue == 0)
             {
-                WriteValue1();
+                WriteValueOne();
                 MoveSlotRight();
                 return State.D;
             }
 
-            WriteValue1();
+            WriteValueOne();
             MoveSlotRight();
             return State.A;
         }
